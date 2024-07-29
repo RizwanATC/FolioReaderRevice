@@ -82,7 +82,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
     private var showAd = true
     private val placementId = "kitap_ici"
     private var bookFileName: String? = null
-
+    //test
     private var mFolioPageViewPager: DirectionalViewpager? = null
     private var actionBar: ActionBar? = null
     private var appBarLayout: FolioAppBarLayout? = null
