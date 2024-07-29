@@ -9,13 +9,13 @@
             android:icon="@drawable/ic_save_24dp"
             android:title="@string/save_button"
             app:showAsAction="ifRoom"
-            tools:showAsAction="always" />
+            tools:showAsAction="never" />
     <item
             android:id="@+id/itemSearch"
             android:icon="@drawable/ic_search"
             android:title="@string/menu_item_search"
             app:showAsAction="ifRoom"
-            tools:showAsAction="always" />
+            tools:showAsAction="never" />
 
     <item
             android:id="@+id/itemConfig"
