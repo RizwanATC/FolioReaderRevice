@@ -22,8 +22,7 @@
 
     <item
             android:id="@+id/itemConfig"
-            android:icon="@drawable/icon_font"
-            android:title="@string/icon_font3"
+            android:icon="@drawable/icon_font3"
             app:showAsAction="ifRoom"
             tools:showAsAction="always" />
 
