@@ -326,7 +326,10 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         setContentView(R.layout.folio_activity)
         this.savedInstanceState = savedInstanceState
+        progressTextView = findViewById(R.id.progressTextView)
 
+        // Other initialization code
+        setupPageChangeListener()
         if (savedInstanceState != null) {
             searchAdapterDataBundle = savedInstanceState.getBundle(SearchAdapter.DATA_BUNDLE)
             searchQuery =
@@ -374,18 +377,23 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         RateThisApp.onCreate(this)
         RateThisApp.showRateDialogIfNeeded(this)
     }
-    private fun initActionBar() {
 
+    private fun initActionBar() {
         appBarLayout = findViewById(R.id.appBarLayout)
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         actionBar = supportActionBar
 
+        // Set the title to an empty string or null
+        actionBar?.title = ""
+        // actionBar?.setDisplayShowTitleEnabled(false)
+
         val config = AppUtil.getSavedConfig(applicationContext)!!
 
-        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_drawer)
+        // Set the navigation icon and theme color
+        val drawable = ContextCompat.getDrawable(this, R.drawable.icon_bookmark_cancel)
         UiUtil.setColorIntToDrawable(config.themeColor, drawable!!)
-        toolbar!!.navigationIcon = drawable
+        toolbar?.navigationIcon = drawable
 
         if (config.isNightMode) {
             setNightMode()
@@ -393,27 +401,21 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             setDayMode()
         }
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val color: Int
-            if (config.isNightMode) {
-                color = ContextCompat.getColor(this, R.color.black)
+            val color: Int = if (config.isNightMode) {
+                ContextCompat.getColor(this, R.color.black)
             } else {
-                /*    val attrs = intArrayOf(android.R.attr.navigationBarColor)
-                    val typedArray = theme.obtainStyledAttributes(attrs)
-                    color = typedArray.getColor(0, ContextCompat.getColor(this, R.color.white))*/
-                color = ContextCompat.getColor(this, R.color.white)
+                ContextCompat.getColor(this, R.color.white)
             }
             window.navigationBarColor = color
         }
 
         if (Build.VERSION.SDK_INT < 16) {
             // Fix for appBarLayout.fitSystemWindows() not being called on API < 16
-            appBarLayout!!.setTopMargin(statusBarHeight)
+            appBarLayout?.setTopMargin(statusBarHeight)
         }
-
-
     }
+
 
     override fun setDayMode() {
         Log.v(LOG_TAG, "-> setDayMode")
@@ -421,7 +423,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         actionBar!!.setBackgroundDrawable(
             ColorDrawable(ContextCompat.getColor(this, R.color.white))
         )
-        toolbar!!.setTitleTextColor(ContextCompat.getColor(this, R.color.black))
+//        toolbar!!.setTitleTextColor(ContextCompat.getColor(this, R.color.black))
     }
 
     override fun setNightMode() {
@@ -430,7 +432,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         actionBar!!.setBackgroundDrawable(
             ColorDrawable(ContextCompat.getColor(this, R.color.black))
         )
-        toolbar!!.setTitleTextColor(ContextCompat.getColor(this, R.color.night_title_text_color))
+//        toolbar!!.setTitleTextColor(ContextCompat.getColor(this, R.color.night_title_text_color))
     }
 
     private fun initMediaController() {
@@ -446,6 +448,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemSearch).icon)
         UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemConfig).icon)
         UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemTts).icon)
+        UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemTOC).icon)
 
         if (!config.isShowTts)
             menu.findItem(R.id.itemTts).isVisible = false
@@ -537,6 +540,10 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             val intent = Intent(FolioReader.ACTION_FOLIOREADER_CLOSED)
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
             Toast.makeText(this, "Kaldığınız yer kaydedildi", Toast.LENGTH_LONG).show();
+            return true
+        } else if (itemId == R.id.itemTOC) {
+            Log.v(LOG_TAG, "-> onOptionsItemSelected -> " + item.title)
+            showMediaController()
             return true
         }
 
@@ -1217,4 +1224,27 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             }
         }
     }
+
+    private lateinit var progressTextView: TextView
+
+
+    private fun setupPageChangeListener() {
+        mFolioPageViewPager?.addOnPageChangeListener(object : DirectionalViewpager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                updateProgress(position)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+    }
+
+    private fun updateProgress(position: Int) {
+        // Update this logic as per your progress calculation
+        val totalPages = spine?.size ?: 0
+        val progressText = "Page ${position + 1} of $totalPages"
+        progressTextView.text = progressText
+    }
+
 }

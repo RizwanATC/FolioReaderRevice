@@ -108,11 +108,11 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     private fun inflateView() {
 
-        if (config.allowedDirection != Config.AllowedDirection.VERTICAL_AND_HORIZONTAL) {
-            view5.visibility = View.GONE
-            buttonVertical.visibility = View.GONE
-            buttonHorizontal.visibility = View.GONE
-        }
+//        if (config.allowedDirection != Config.AllowedDirection.VERTICAL_AND_HORIZONTAL) {
+//            view5.visibility = View.GONE
+//            buttonVertical.visibility = View.GONE
+//            buttonHorizontal.visibility = View.GONE
+//        }
 
         view_config_ib_day_mode.setOnClickListener {
             isNightMode = true

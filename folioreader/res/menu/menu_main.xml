@@ -30,8 +30,16 @@
             android:id="@+id/itemTts"
             android:icon="@drawable/man_speech_icon"
             android:title="@string/menu_item_tts"
-            android:visible="true"
+            android:visible="false"
             app:showAsAction="ifRoom"
             tools:showAsAction="always" />
+
+    <item
+        android:id="@+id/itemTOC"
+        android:icon="@drawable/icon_ebook_menu"
+        android:title="TOC"
+        android:visible="true"
+        app:showAsAction="ifRoom"
+        tools:showAsAction="always" />
 
 </menu>
