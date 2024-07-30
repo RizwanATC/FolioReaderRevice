@@ -326,10 +326,10 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         setContentView(R.layout.folio_activity)
         this.savedInstanceState = savedInstanceState
-        progressTextView = findViewById(R.id.progressTextView)
-
-        // Other initialization code
-        setupPageChangeListener()
+//        progressTextView = findViewById(R.id.progressTextView)
+//
+//        // Other initialization code
+//        setupPageChangeListener()
         if (savedInstanceState != null) {
             searchAdapterDataBundle = savedInstanceState.getBundle(SearchAdapter.DATA_BUNDLE)
             searchQuery =
@@ -1225,26 +1225,26 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         }
     }
 
-    private lateinit var progressTextView: TextView
-
-
-    private fun setupPageChangeListener() {
-        mFolioPageViewPager?.addOnPageChangeListener(object : DirectionalViewpager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                updateProgress(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
-    }
-
-    private fun updateProgress(position: Int) {
-        // Update this logic as per your progress calculation
-        val totalPages = spine?.size ?: 0
-        val progressText = "Page ${position + 1} of $totalPages"
-        progressTextView.text = progressText
-    }
+//    private lateinit var progressTextView: TextView
+//
+//
+//    private fun setupPageChangeListener() {
+//        mFolioPageViewPager?.addOnPageChangeListener(object : DirectionalViewpager.OnPageChangeListener {
+//            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+//
+//            override fun onPageSelected(position: Int) {
+//                updateProgress(position)
+//            }
+//
+//            override fun onPageScrollStateChanged(state: Int) {}
+//        })
+//    }
+//
+//    private fun updateProgress(position: Int) {
+//        // Update this logic as per your progress calculation
+//        val totalPages = spine?.size ?: 0
+//        val progressText = "Page ${position + 1} of $totalPages"
+//        progressTextView.text = progressText
+//    }
 
 }
