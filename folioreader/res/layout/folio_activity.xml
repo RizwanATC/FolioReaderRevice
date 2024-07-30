@@ -3,22 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-        android:keepScreenOn="true"
+    android:keepScreenOn="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.folioreader.ui.activity.FolioActivity"
     tools:menu="@menu/menu_main">
-
-    <com.folioreader.ui.view.DirectionalViewpager
-        android:paddingTop="?android:actionBarSize"
-        android:id="@+id/folioPageViewPager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:direction="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.folioreader.ui.view.FolioAppBarLayout
         android:id="@+id/appBarLayout"
@@ -37,5 +26,16 @@
             app:contentInsetStartWithNavigation="0dp" />
 
     </com.folioreader.ui.view.FolioAppBarLayout>
+
+    <com.folioreader.ui.view.DirectionalViewpager
+        android:paddingTop="?android:actionBarSize"
+        android:id="@+id/folioPageViewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:direction="vertical"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
