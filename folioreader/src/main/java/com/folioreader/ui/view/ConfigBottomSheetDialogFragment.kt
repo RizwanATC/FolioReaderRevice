@@ -126,10 +126,10 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
             ContextCompat.getColor(requireContext(), R.color.grey_color)
         )
 
-        view?.findViewById<TextView>(R.id.view_config_font_andada)?.setTextColor(colorStateList)
+       /* view?.findViewById<TextView>(R.id.view_config_font_andada)?.setTextColor(colorStateList)
         view?.findViewById<TextView>(R.id.view_config_font_lato)?.setTextColor(colorStateList)
         view?.findViewById<TextView>(R.id.view_config_font_lora)?.setTextColor(colorStateList)
-        view?.findViewById<TextView>(R.id.view_config_font_raleway)?.setTextColor(colorStateList)
+        view?.findViewById<TextView>(R.id.view_config_font_raleway)?.setTextColor(colorStateList)*/
 
         view?.findViewById<TextView>(R.id.view_config_font_andada)?.setOnClickListener { selectFont(Constants.FONT_ANDADA, true) }
         view?.findViewById<TextView>(R.id.view_config_font_lato)?.setOnClickListener { selectFont(Constants.FONT_LATO, true) }
@@ -156,12 +156,12 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
             ContextCompat.getColor(requireContext(), R.color.black)
         }
 
-        view?.findViewById<TextView>(R.id.view_config_font_andada)?.setTextColor(textColor)
+        /*view?.findViewById<TextView>(R.id.view_config_font_andada)?.setTextColor(textColor)
         view?.findViewById<TextView>(R.id.view_config_font_lato)?.setTextColor(textColor)
         view?.findViewById<TextView>(R.id.view_config_font_lora)?.setTextColor(textColor)
         view?.findViewById<TextView>(R.id.view_config_font_raleway)?.setTextColor(textColor)
         view?.findViewById<TextView>(R.id.view_config_tv_vertical)?.setTextColor(textColor)
-        view?.findViewById<TextView>(R.id.view_config_tv_horizontal)?.setTextColor(textColor)
+        view?.findViewById<TextView>(R.id.view_config_tv_horizontal)?.setTextColor(textColor)*/
     }
 
     private fun configSeekBar() {
