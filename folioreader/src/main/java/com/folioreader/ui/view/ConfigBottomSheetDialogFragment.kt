@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.SeekBar
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.folioreader.Config
@@ -25,9 +24,16 @@ import com.folioreader.util.UiUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.activity_content_highlight.view.*
+import kotlinx.android.synthetic.main.view_config.*
 import org.greenrobot.eventbus.EventBus
+import android.graphics.Color
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 
+/**
+ * Created by mobisys2 on 11/16/2016.
+ */
 class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     companion object {
@@ -39,10 +45,9 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private lateinit var config: Config
     private var isNightMode = false
     private lateinit var activityCallback: FolioActivityCallback
-    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mRootView = inflater.inflate(R.layout.view_config, container, false)
-        return mRootView
+        mRootView = inflater.inflate(R.layout.folio_page_fragment, container, false)
+        return inflater.inflate(R.layout.view_config, container)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +58,8 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         view.viewTreeObserver.addOnGlobalLayoutListener {
             val dialog = dialog as BottomSheetDialog
-            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
+            val bottomSheet =
+                dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
             val behavior = BottomSheetBehavior.from(bottomSheet!!)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.peekHeight = 0
@@ -71,106 +77,255 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private fun initViews() {
         inflateView()
         configFonts()
-        view?.findViewById<SeekBar>(R.id.view_config_font_size_seek_bar)?.progress = config.fontSize
+        view_config_font_size_seek_bar.progress = config.fontSize
         configSeekBar()
         selectFont(config.font, false)
         isNightMode = config.isNightMode
-        val container = view?.findViewById<View>(R.id.container)
-        container?.setBackgroundColor(ContextCompat.getColor(requireContext(), if (isNightMode) R.color.night else R.color.white))
-
-        val dayModeButton = view?.findViewById<View>(R.id.view_config_ib_day_mode)
-        val nightModeButton = view?.findViewById<View>(R.id.view_config_ib_night_mode)
+        if (isNightMode) {
+            container.setBackgroundColor(ContextCompat.getColor(context!!, R.color.night))
+        } else {
+            container.setBackgroundColor(ContextCompat.getColor(context!!, R.color.white))
+        }
 
         if (isNightMode) {
-            dayModeButton?.isSelected = false
-            nightModeButton?.isSelected = true
-            UiUtil.setColorIntToDrawable(config.themeColor, nightModeButton?.background)
-            UiUtil.setColorResToDrawable(R.color.app_gray, dayModeButton?.background)
+            view_config_ib_day_mode.isSelected = false
+            view_config_ib_night_mode.isSelected = true
+            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_night_mode.drawable)
+            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_day_mode.drawable)
         } else {
-            dayModeButton?.isSelected = true
-            nightModeButton?.isSelected = false
-            UiUtil.setColorIntToDrawable(config.themeColor, dayModeButton?.background)
-            UiUtil.setColorResToDrawable(R.color.app_gray, nightModeButton?.background)
+            view_config_ib_day_mode.isSelected = true
+            view_config_ib_night_mode.isSelected = false
+            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode!!.drawable)
+            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
         }
-
-        dayModeButton?.setOnClickListener {
-            isNightMode = true
-            toggleBlackTheme()
-            dayModeButton.isSelected = true
-            nightModeButton?.isSelected = false
-            setToolBarColor()
-            setAudioPlayerBackground()
-            UiUtil.setColorResToDrawable(R.color.app_gray, nightModeButton?.background)
-            UiUtil.setColorIntToDrawable(config.themeColor, dayModeButton.background)
-        }
-
-        nightModeButton?.setOnClickListener {
-            isNightMode = false
-            toggleBlackTheme()
-            dayModeButton?.isSelected = false
-            nightModeButton.isSelected = true
-            UiUtil.setColorResToDrawable(R.color.app_gray, dayModeButton?.background)
-            UiUtil.setColorIntToDrawable(config.themeColor, nightModeButton.background)
-            setToolBarColor()
-            setAudioPlayerBackground()
-        }
+//        if (config.isPremium){
+//            view_config_white.setImageDrawable(null);
+        view_config_yellowAcik.setImageDrawable(null);
+        view_config_yellow.setImageDrawable(null);
+        view_config_green.setImageDrawable(null);
+//        }
     }
 
     private fun inflateView() {
-        // Your existing code for inflating views
+
+        if (config.allowedDirection != Config.AllowedDirection.VERTICAL_AND_HORIZONTAL) {
+            view5.visibility = View.GONE
+            buttonVertical.visibility = View.GONE
+            buttonHorizontal.visibility = View.GONE
+        }
+
+        view_config_ib_day_mode.setOnClickListener {
+            isNightMode = true
+            toggleBlackTheme()
+            view_config_ib_day_mode.isSelected = true
+            view_config_ib_night_mode.isSelected = false
+            setToolBarColor()
+            setAudioPlayerBackground()
+            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
+            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
+        }
+
+        view_config_ib_night_mode.setOnClickListener {
+            isNightMode = false
+            toggleBlackTheme()
+            view_config_ib_day_mode.isSelected = false
+            view_config_ib_night_mode.isSelected = true
+            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_day_mode.drawable)
+            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_night_mode.drawable)
+            setToolBarColor()
+            setAudioPlayerBackground()
+        }
+
+        view_config_white.setOnClickListener {
+            isNightMode = true
+            config.setBackgroundColorInt(0)
+            toggleBlackTheme()
+            setToolBarColor()
+            setAudioPlayerBackground()
+            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
+            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
+        }
+//        if (config.isPremium) {
+        view_config_yellowAcik.setOnClickListener {
+            isNightMode = true
+            config.setBackgroundColorInt(2)
+            toggleBlackTheme()
+            setToolBarColor()
+            setAudioPlayerBackground()
+            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
+            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
+        }
+        view_config_green.setOnClickListener {
+            isNightMode = true
+            config.setBackgroundColorInt(1)
+            toggleBlackTheme()
+            setToolBarColor()
+            setAudioPlayerBackground()
+            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
+            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
+        }
+        view_config_yellow.setOnClickListener {
+            isNightMode = true
+            config.setBackgroundColorInt(3)
+            toggleBlackTheme()
+            setToolBarColor()
+            setAudioPlayerBackground()
+            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
+            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
+        }
+        /*  }
+          else {
+             *//* view_config_white.setOnClickListener {
+                arkaplanPremium()
+            }*//*
+            view_config_yellowAcik.setOnClickListener {arkaplanPremium()}
+            view_config_green.setOnClickListener {arkaplanPremium()}
+            view_config_yellow.setOnClickListener {arkaplanPremium()}
+        }*/
+
+        if (activityCallback.direction == Config.Direction.HORIZONTAL) {
+            buttonHorizontal.isSelected = true
+        } else if (activityCallback.direction == Config.Direction.VERTICAL) {
+            buttonVertical.isSelected = true
+        }
+
+        buttonVertical.setOnClickListener {
+            config = AppUtil.getSavedConfig(context)!!
+            config.direction = Config.Direction.VERTICAL
+            AppUtil.saveConfig(context, config)
+            activityCallback.onDirectionChange(Config.Direction.VERTICAL)
+            buttonHorizontal.isSelected = false
+            buttonVertical.isSelected = true
+        }
+
+        buttonHorizontal.setOnClickListener {
+            config = AppUtil.getSavedConfig(context)!!
+            config.direction = Config.Direction.HORIZONTAL
+            AppUtil.saveConfig(context, config)
+            activityCallback.onDirectionChange(Config.Direction.HORIZONTAL)
+            buttonHorizontal.isSelected = true
+            buttonVertical.isSelected = false
+        }
     }
 
+    private fun arkaplanPremium() {
+        val builder = AlertDialog.Builder(context!!)
+        builder.setMessage(R.string.arkaplanPremium)
+        builder.setPositiveButton(android.R.string.ok) { dialog, which ->
+
+        }
+
+        builder.show()
+    }
     private fun configFonts() {
+
         val colorStateList = UiUtil.getColorList(
             config.themeColor,
-            ContextCompat.getColor(requireContext(), R.color.grey_color)
+            ContextCompat.getColor(context!!, R.color.grey_color)
         )
+        buttonVertical.setTextColor(colorStateList)
+        buttonHorizontal.setTextColor(colorStateList)
+        view_config_font_andada.setTextColor(colorStateList)
+        view_config_font_lato.setTextColor(colorStateList)
+        view_config_font_lora.setTextColor(colorStateList)
+        view_config_font_raleway.setTextColor(colorStateList)
 
-        view?.findViewById<TextView>(R.id.view_config_font_andada)?.setTextColor(colorStateList)
-        view?.findViewById<TextView>(R.id.view_config_font_lato)?.setTextColor(colorStateList)
-        view?.findViewById<TextView>(R.id.view_config_font_lora)?.setTextColor(colorStateList)
-        view?.findViewById<TextView>(R.id.view_config_font_raleway)?.setTextColor(colorStateList)
-
-        view?.findViewById<TextView>(R.id.view_config_font_andada)?.setOnClickListener { selectFont(Constants.FONT_ANDADA, true) }
-        view?.findViewById<TextView>(R.id.view_config_font_lato)?.setOnClickListener { selectFont(Constants.FONT_LATO, true) }
-        view?.findViewById<TextView>(R.id.view_config_font_lora)?.setOnClickListener { selectFont(Constants.FONT_LORA, true) }
-        view?.findViewById<TextView>(R.id.view_config_font_raleway)?.setOnClickListener { selectFont(Constants.FONT_RALEWAY, true) }
+        view_config_font_andada.setOnClickListener { selectFont(Constants.FONT_ANDADA, true) }
+        view_config_font_lato.setOnClickListener { selectFont(Constants.FONT_LATO, true) }
+        view_config_font_lora.setOnClickListener { selectFont(Constants.FONT_LORA, true) }
+        view_config_font_raleway.setOnClickListener { selectFont(Constants.FONT_RALEWAY, true) }
     }
 
     private fun selectFont(selectedFont: Int, isReloadNeeded: Boolean) {
-        // Your existing code for selecting fonts
+        when (selectedFont) {
+            Constants.FONT_ANDADA -> setSelectedFont(true, false, false, false)
+            Constants.FONT_LATO -> setSelectedFont(false, true, false, false)
+            Constants.FONT_LORA -> setSelectedFont(false, false, true, false)
+            Constants.FONT_RALEWAY -> setSelectedFont(false, false, false, true)
+        }
+        config.font = selectedFont
+        if (isAdded && isReloadNeeded) {
+            AppUtil.saveConfig(activity, config)
+            EventBus.getDefault().post(ReloadDataEvent())
+        }
     }
 
     private fun setSelectedFont(andada: Boolean, lato: Boolean, lora: Boolean, raleway: Boolean) {
-        // Your existing code for setting selected font
+        view_config_font_andada.isSelected = andada
+        view_config_font_lato.isSelected = lato
+        view_config_font_lora.isSelected = lora
+        view_config_font_raleway.isSelected = raleway
     }
 
     private fun toggleBlackTheme() {
-        // Your existing code for toggling the black theme
-    }
 
-    private fun updateTextColors() {
-        val textColor = if (isNightMode) {
-            ContextCompat.getColor(requireContext(), R.color.white)
-        } else {
-            ContextCompat.getColor(requireContext(), R.color.black)
+        val day = ContextCompat.getColor(context!!, R.color.white)
+        val night = ContextCompat.getColor(context!!, R.color.night)
+
+        val colorAnimation = ValueAnimator.ofObject(
+            ArgbEvaluator(),
+            if (isNightMode) night else day, if (isNightMode) day else night
+        )
+        colorAnimation.duration = FADE_DAY_NIGHT_MODE.toLong()
+
+        colorAnimation.addUpdateListener { animator ->
+            val value = animator.animatedValue as Int
+            container.setBackgroundColor(value)
         }
 
-        view?.findViewById<TextView>(R.id.view_config_font_andada)?.setTextColor(textColor)
-        view?.findViewById<TextView>(R.id.view_config_font_lato)?.setTextColor(textColor)
-        view?.findViewById<TextView>(R.id.view_config_font_lora)?.setTextColor(textColor)
-        view?.findViewById<TextView>(R.id.view_config_font_raleway)?.setTextColor(textColor)
-        view?.findViewById<TextView>(R.id.view_config_tv_vertical)?.setTextColor(textColor)
-        view?.findViewById<TextView>(R.id.view_config_tv_horizontal)?.setTextColor(textColor)
+        colorAnimation.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animator: Animator) {}
+
+            override fun onAnimationEnd(animator: Animator) {
+                isNightMode = !isNightMode
+                config.isNightMode = isNightMode
+                AppUtil.saveConfig(activity, config)
+                EventBus.getDefault().post(ReloadDataEvent())
+            }
+
+            override fun onAnimationCancel(animator: Animator) {}
+
+            override fun onAnimationRepeat(animator: Animator) {}
+        })
+
+        colorAnimation.duration = FADE_DAY_NIGHT_MODE.toLong()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            /* val attrs = intArrayOf(android.R.attr.navigationBarColor)
+             val typedArray = activity?.theme?.obtainStyledAttributes(attrs)
+             val defaultNavigationBarColor = typedArray?.getColor(
+                 0,
+                 ContextCompat.getColor(context!!, R.color.white)
+             )*/
+            val black = ContextCompat.getColor(context!!, R.color.black)
+            val white = ContextCompat.getColor(context!!, R.color.white)
+
+            val navigationColorAnim = ValueAnimator.ofObject(
+                ArgbEvaluator(),
+                if (isNightMode) black else white,
+                if (isNightMode) white else black
+            )
+
+            navigationColorAnim.addUpdateListener { valueAnimator ->
+                val value = valueAnimator.animatedValue as Int
+                activity?.window?.navigationBarColor = value
+            }
+
+            navigationColorAnim.duration = FADE_DAY_NIGHT_MODE.toLong()
+            navigationColorAnim.start()
+        }
+
+        colorAnimation.start()
     }
 
     private fun configSeekBar() {
-        val thumbDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.seekbar_thumb)
+        val thumbDrawable = ContextCompat.getDrawable(activity!!, R.drawable.seekbar_thumb)
         UiUtil.setColorIntToDrawable(config.themeColor, thumbDrawable)
-        UiUtil.setColorResToDrawable(R.color.grey_color, view?.findViewById<SeekBar>(R.id.view_config_font_size_seek_bar)?.progressDrawable)
-        view?.findViewById<SeekBar>(R.id.view_config_font_size_seek_bar)?.thumb = thumbDrawable
+        UiUtil.setColorResToDrawable(R.color.grey_color, view_config_font_size_seek_bar.progressDrawable)
+        view_config_font_size_seek_bar.thumb = thumbDrawable
 
-        view?.findViewById<SeekBar>(R.id.view_config_font_size_seek_bar)?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        view_config_font_size_seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 config.fontSize = progress
                 AppUtil.saveConfig(activity, config)
@@ -184,10 +339,22 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun setToolBarColor() {
-        // Your existing code for setting toolbar color
+        if (isNightMode) {
+            activityCallback.setDayMode()
+        } else {
+            activityCallback.setNightMode()
+        }
     }
 
     private fun setAudioPlayerBackground() {
-        // Your existing code for setting audio player background
+
+        var mediaControllerFragment: Fragment? = fragmentManager?.findFragmentByTag(MediaControllerFragment.LOG_TAG)
+            ?: return
+        mediaControllerFragment = mediaControllerFragment as MediaControllerFragment
+        if (isNightMode) {
+            mediaControllerFragment.setDayMode()
+        } else {
+            mediaControllerFragment.setNightMode()
+        }
     }
 }
