@@ -30,6 +30,7 @@ import org.greenrobot.eventbus.EventBus
 import android.graphics.Color
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import android.widget.TextView
 
 /**
  * Created by mobisys2 on 11/16/2016.
