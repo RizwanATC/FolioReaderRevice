@@ -290,12 +290,32 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
     }
 
     override fun onBackPressed() {
-        // Customize the back button behavior here
-        // For example, you can show a confirmation dialog before exiting, or perform some cleanup
-        finish()
-        // Call the super method to handle the default back button behavior
+        // Call super to handle the default back button behavior
         super.onBackPressed()
+
+        // Check if the activity was left or not the top activity
+        if (topActivity == null || !topActivity!!) {
+            // Finish the activity immediately
+            finish()
+
+            // Check if the app is in the background or foreground
+            var appInBackground = false
+            if (Build.VERSION.SDK_INT < 26) {
+                if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND == taskImportance)
+                    appInBackground = true
+            } else {
+                if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_CACHED == taskImportance)
+                    appInBackground = true
+            }
+            if (appInBackground) {
+                moveTaskToBack(true)
+            }
+        }
+
+        // Override the transition animation to slide out left
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
     }
+
 
 
     override fun onStart() {
@@ -529,7 +549,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         }
 
         // Override the transition animation to slide out right
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
     }
 
 
