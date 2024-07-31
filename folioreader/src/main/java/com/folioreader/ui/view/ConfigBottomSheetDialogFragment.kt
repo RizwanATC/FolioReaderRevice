@@ -175,12 +175,12 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
             config.themeColor,
             ContextCompat.getColor(context!!, R.color.grey_color)
         )
-        buttonVertical.setTextColor(colorStateList)
+       /* buttonVertical.setTextColor(colorStateList)
         buttonHorizontal.setTextColor(colorStateList)
         view_config_font_andada.setTextColor(colorStateList)
         view_config_font_lato.setTextColor(colorStateList)
         view_config_font_lora.setTextColor(colorStateList)
-        view_config_font_raleway.setTextColor(colorStateList)
+        view_config_font_raleway.setTextColor(colorStateList)*/
 
         view_config_font_andada.setOnClickListener { selectFont(Constants.FONT_ANDADA, true) }
         view_config_font_lato.setOnClickListener { selectFont(Constants.FONT_LATO, true) }
