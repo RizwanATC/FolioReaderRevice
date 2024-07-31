@@ -281,7 +281,12 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun updateTextColors() {
-        val textColor = if (isNightMode) ContextCompat.getColor(context!!, R.color.white) else ContextCompat.getColor(context!!, R.color.black)
+        val textColor = if (isNightMode) {
+            ContextCompat.getColor(requireContext(), R.color.white)
+        } else {
+            ContextCompat.getColor(requireContext(), R.color.black)
+        }
+
         view_config_font_andada.setTextColor(textColor)
         view_config_font_lato.setTextColor(textColor)
         view_config_font_lora.setTextColor(textColor)
