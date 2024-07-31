@@ -142,22 +142,29 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
 
         buttonVertical.setOnClickListener {
-            config = AppUtil.getSavedConfig(context)!!
+            if (activityCallback.direction == Config.Direction.VERTICAL) return@setOnClickListener // Already in vertical
             config.direction = Config.Direction.VERTICAL
             AppUtil.saveConfig(context, config)
             activityCallback.onDirectionChange(Config.Direction.VERTICAL)
-            buttonHorizontal.isSelected = false
-            buttonVertical.isSelected = true
+            updateLayoutModeButtons()
         }
 
         buttonHorizontal.setOnClickListener {
-            config = AppUtil.getSavedConfig(context)!!
+            if (activityCallback.direction == Config.Direction.HORIZONTAL) return@setOnClickListener // Already in horizontal
             config.direction = Config.Direction.HORIZONTAL
             AppUtil.saveConfig(context, config)
             activityCallback.onDirectionChange(Config.Direction.HORIZONTAL)
-            buttonHorizontal.isSelected = true
-            buttonVertical.isSelected = false
+            updateLayoutModeButtons()
         }
+        // Initial UI setup
+        updateLayoutModeButtons()
+        updateTextColors()
+    }
+
+    private fun updateLayoutModeButtons() {
+        val isVertical = config.direction == Config.Direction.VERTICAL
+        buttonVertical.isSelected = isVertical
+        buttonHorizontal.isSelected = !isVertical
     }
 
     private fun arkaplanPremium() {
@@ -233,6 +240,8 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 config.isNightMode = isNightMode
                 AppUtil.saveConfig(activity, config)
                 EventBus.getDefault().post(ReloadDataEvent())
+
+                updateTextColors()
             }
 
             override fun onAnimationCancel(animator: Animator) {}
@@ -269,6 +278,16 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
 
         colorAnimation.start()
+    }
+
+    private fun updateTextColors() {
+        val textColor = if (isNightMode) ContextCompat.getColor(context!!, R.color.white) else ContextCompat.getColor(context!!, R.color.black)
+        view_config_font_andada.setTextColor(textColor)
+        view_config_font_lato.setTextColor(textColor)
+        view_config_font_lora.setTextColor(textColor)
+        view_config_font_raleway.setTextColor(textColor)
+        view_config_tv_vertical.setTextColor(textColor)
+        view_config_tv_horizontal.setTextColor(textColor)
     }
 
     private fun configSeekBar() {
