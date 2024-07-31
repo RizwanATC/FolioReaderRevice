@@ -579,8 +579,8 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         intent.putExtra(Constants.BOOK_TITLE, bookFileName)
 
         startActivityForResult(intent, RequestCode.CONTENT_HIGHLIGHT.value)
-//        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     fun showConfigBottomSheetDialogFragment() {
