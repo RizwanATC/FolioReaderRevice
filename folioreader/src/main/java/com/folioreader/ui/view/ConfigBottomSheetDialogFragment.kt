@@ -92,11 +92,15 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
             view_config_ib_night_mode.isSelected = true
             UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_night_mode.drawable)
             UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_day_mode.drawable)
+            view.findViewById<TextView>(R.id.day_mode_text)?.setTextColor(config.themeColor)
+            view.findViewById<TextView>(R.id.night_mode_text)?.setTextColor(resources.getColor(R.color.app_gray))
         } else {
             view_config_ib_day_mode.isSelected = true
             view_config_ib_night_mode.isSelected = false
             UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode!!.drawable)
             UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
+            view.findViewById<TextView>(R.id.night_mode_text)?.setTextColor(config.themeColor)
+            view.findViewById<TextView>(R.id.day_mode_text)?.setTextColor(resources.getColor(R.color.app_gray))
         }
 //        if (config.isPremium){
 //        }
