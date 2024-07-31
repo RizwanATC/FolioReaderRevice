@@ -99,10 +99,6 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
             UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
         }
 //        if (config.isPremium){
-//            view_config_white.setImageDrawable(null);
-            view_config_yellowAcik.setImageDrawable(null);
-            view_config_yellow.setImageDrawable(null);
-            view_config_green.setImageDrawable(null);
 //        }
     }
 
@@ -136,52 +132,8 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
             setAudioPlayerBackground()
         }
 
-        view_config_white.setOnClickListener {
-            isNightMode = true
-            config.setBackgroundColorInt(0)
-            toggleBlackTheme()
-            setToolBarColor()
-            setAudioPlayerBackground()
-            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
-            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
-        }
-//        if (config.isPremium) {
-        view_config_yellowAcik.setOnClickListener {
-            isNightMode = true
-            config.setBackgroundColorInt(2)
-            toggleBlackTheme()
-            setToolBarColor()
-            setAudioPlayerBackground()
-            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
-            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
-        }
-        view_config_green.setOnClickListener {
-            isNightMode = true
-            config.setBackgroundColorInt(1)
-            toggleBlackTheme()
-            setToolBarColor()
-            setAudioPlayerBackground()
-            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
-            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
-        }
-        view_config_yellow.setOnClickListener {
-            isNightMode = true
-            config.setBackgroundColorInt(3)
-            toggleBlackTheme()
-            setToolBarColor()
-            setAudioPlayerBackground()
-            UiUtil.setColorResToDrawable(R.color.app_gray, view_config_ib_night_mode.drawable)
-            UiUtil.setColorIntToDrawable(config.themeColor, view_config_ib_day_mode.drawable)
-        }
-        /*  }
-          else {
-             *//* view_config_white.setOnClickListener {
-                arkaplanPremium()
-            }*//*
-            view_config_yellowAcik.setOnClickListener {arkaplanPremium()}
-            view_config_green.setOnClickListener {arkaplanPremium()}
-            view_config_yellow.setOnClickListener {arkaplanPremium()}
-        }*/
+       
+
 
         if (activityCallback.direction == Config.Direction.HORIZONTAL) {
             buttonHorizontal.isSelected = true
