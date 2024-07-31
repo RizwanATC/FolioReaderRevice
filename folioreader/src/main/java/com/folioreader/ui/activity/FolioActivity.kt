@@ -507,7 +507,9 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         if (itemId == android.R.id.home) {
             Log.v(LOG_TAG, "-> onOptionsItemSelected -> drawer")
-            startContentHighlightActivity()
+//            startContentHighlightActivity()
+//            onBackPressed()
+            finish() // This closes the current activity
             return true
 
         } else if (itemId == R.id.itemSearch) {
@@ -543,7 +545,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             return true
         } else if (itemId == R.id.itemTOC) {
             Log.v(LOG_TAG, "-> onOptionsItemSelected -> " + item.title)
-            showMediaController()
+            startContentHighlightActivity()
             return true
         }
 
