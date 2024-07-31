@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/folioPageFragment"
-        android:keepScreenOn="true"
+    android:keepScreenOn="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -60,13 +60,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#888888"
-            android:textSize="7sp" />
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/pagesLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#bbbbbb"
-            android:textSize="8sp" />
+            android:textSize="10sp" />
     </LinearLayout>
 </RelativeLayout>

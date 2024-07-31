@@ -289,6 +289,15 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
     }
 
+    override fun onBackPressed() {
+        // Customize the back button behavior here
+        // For example, you can show a confirmation dialog before exiting, or perform some cleanup
+        finish()
+        // Call the super method to handle the default back button behavior
+        super.onBackPressed()
+    }
+
+
     override fun onStart() {
         super.onStart()
         Log.v(LOG_TAG, "-> onStart")
@@ -508,8 +517,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         if (itemId == android.R.id.home) {
             Log.v(LOG_TAG, "-> onOptionsItemSelected -> drawer")
 //            startContentHighlightActivity()
-//            onBackPressed()
-            finish() // This closes the current activity
+            finishAffinity() // This closes the current activity immediately
             return true
 
         } else if (itemId == R.id.itemSearch) {
@@ -571,7 +579,8 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         intent.putExtra(Constants.BOOK_TITLE, bookFileName)
 
         startActivityForResult(intent, RequestCode.CONTENT_HIGHLIGHT.value)
-        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+//        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     fun showConfigBottomSheetDialogFragment() {

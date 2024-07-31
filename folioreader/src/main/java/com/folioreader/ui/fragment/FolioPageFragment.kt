@@ -406,7 +406,19 @@ try {
     private val webViewClient = object : WebViewClient() {
 
         override fun onPageFinished(view: WebView, url: String) {
+            super.onPageFinished(view, url)
 
+            if (view.contentHeight != 0) {
+                val scrollY = view.scrollY
+                updatePagesLeftText(scrollY)
+            } else {
+                // In case contentHeight is not yet set, post a delay
+                view.post {
+                    if (view.contentHeight != 0) {
+                        updatePagesLeftText(view.scrollY)
+                    }
+                }
+            }
             mWebview!!.loadUrl("javascript:checkCompatMode()")
             mWebview!!.loadUrl("javascript:alert(getReadingTime())")
 
@@ -721,10 +733,10 @@ try {
 
             mMinutesLeftTextView!!.text = minutesRemainingStr
             mPagesLeftTextView!!.text = pagesRemainingStr
-        } catch (exp: java.lang.ArithmeticException) {
-            Log.e("divide error", exp.toString())
+        } catch (exp: ArithmeticException) {
+            Log.e("FolioPageFragment", "Arithmetic error in updatePagesLeftText", exp)
         } catch (exp: IllegalStateException) {
-            Log.e("divide error", exp.toString())
+            Log.e("FolioPageFragment", "State error in updatePagesLeftText", exp)
         }
 
     }
