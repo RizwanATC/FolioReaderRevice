@@ -287,13 +287,14 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
             ContextCompat.getColor(requireContext(), R.color.black)
         }
 
-        view_config_font_andada.setTextColor(textColor)
-        view_config_font_lato.setTextColor(textColor)
-        view_config_font_lora.setTextColor(textColor)
-        view_config_font_raleway.setTextColor(textColor)
-        view_config_tv_vertical.setTextColor(textColor)
-        view_config_tv_horizontal.setTextColor(textColor)
+        view?.findViewById<TextView>(R.id.view_config_font_andada)?.setTextColor(textColor)
+        view?.findViewById<TextView>(R.id.view_config_font_lato)?.setTextColor(textColor)
+        view?.findViewById<TextView>(R.id.view_config_font_lora)?.setTextColor(textColor)
+        view?.findViewById<TextView>(R.id.view_config_font_raleway)?.setTextColor(textColor)
+        view?.findViewById<TextView>(R.id.view_config_tv_vertical)?.setTextColor(textColor)
+        view?.findViewById<TextView>(R.id.view_config_tv_horizontal)?.setTextColor(textColor)
     }
+
 
     private fun configSeekBar() {
         val thumbDrawable = ContextCompat.getDrawable(activity!!, R.drawable.seekbar_thumb)
