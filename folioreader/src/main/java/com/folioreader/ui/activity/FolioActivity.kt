@@ -503,6 +503,36 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         return true
     }
 
+    @Override
+    fun onBackPressed() {
+        // Call super to handle the default back button behavior
+        super.onBackPressed()
+
+
+        // Check if the activity was left or not the top activity
+        if (topActivity == null || !topActivity!!) {
+            // Finish the activity immediately
+            finish()
+
+            // Check if the app is in the background or foreground
+            var appInBackground = false
+            if (Build.VERSION.SDK_INT < 26) {
+                if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND === taskImportance) appInBackground =
+                    true
+            } else {
+                if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_CACHED === taskImportance) appInBackground =
+                    true
+            }
+            if (appInBackground) {
+                moveTaskToBack(true)
+            }
+        }
+
+        // Override the transition animation to slide out right
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         //Log.d(LOG_TAG, "-> onOptionsItemSelected -> " + item.getItemId());
 //        val config = AppUtil.getSavedConfig(applicationContext)!!
@@ -518,7 +548,27 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             Log.v(LOG_TAG, "-> onOptionsItemSelected -> drawer")
 //            startContentHighlightActivity()
             finish() // This closes the current activity immediately
-            finish() // This closes the current activity immediately
+            val action = getIntent().action
+            if (action != null && action == FolioReader.ACTION_CLOSE_FOLIOREADER) {
+
+                if (topActivity == null || topActivity == false) {
+                    // FolioActivity was already left, so no need to broadcast ReadLocator again.
+                    // Finish activity without going through onPause() and onStop()
+                    finish()
+
+                    // To determine if app in background or foreground
+                    var appInBackground = false
+                    if (Build.VERSION.SDK_INT < 26) {
+                        if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND == taskImportance)
+                            appInBackground = true
+                    } else {
+                        if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_CACHED == taskImportance)
+                            appInBackground = true
+                    }
+                    if (appInBackground)
+                        moveTaskToBack(true)
+                }
+            }
             return true
 
         } else if (itemId == R.id.itemSearch) {
