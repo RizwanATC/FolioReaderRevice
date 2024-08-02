@@ -536,17 +536,11 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         if (itemId == android.R.id.home) {
             Log.v(LOG_TAG, "-> onOptionsItemSelected -> drawer")
-//            startContentHighlightActivity()
-            finish() // This closes the current activity immediately
+            finish()
             val action = getIntent().action
             if (action != null && action == FolioReader.ACTION_CLOSE_FOLIOREADER) {
-
-                if (topActivity == null || topActivity == false) {
-                    // FolioActivity was already left, so no need to broadcast ReadLocator again.
-                    // Finish activity without going through onPause() and onStop()
+                if (topActivity == null || !topActivity!!) {
                     finish()
-
-                    // To determine if app in background or foreground
                     var appInBackground = false
                     if (Build.VERSION.SDK_INT < 26) {
                         if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND == taskImportance)
@@ -560,7 +554,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
                 }
             }
             return true
-
         } else if (itemId == R.id.itemSearch) {
             Log.v(LOG_TAG, "-> onOptionsItemSelected -> " + item.title)
             if (searchUri == null)
