@@ -301,11 +301,11 @@ class FolioWebView : WebView {
             loadUrl("javascript:deleteThisHighlight()")
         }
 
-//        if (config.isCopyEnabled) {
-//            viewTextSelection.copySelection.visibility = View.VISIBLE
-//        } else {
-//            viewTextSelection.copySelection.visibility = View.GONE
-//        }
+        if (config.isCopyEnabled) {
+            viewTextSelection.copySelection.visibility = View.GONE
+        } else {
+            viewTextSelection.copySelection.visibility = View.GONE
+        }
         viewTextSelection.copySelection.setOnClickListener {
             dismissPopupWindow()
             loadUrl("javascript:onTextSelectionItemClicked(${it.id})")
@@ -325,51 +325,51 @@ class FolioWebView : WebView {
             loadUrl("javascript:onTextSelectionItemClicked(${it.id})")
         }
 
-//        if (config.isDefineEnabled) {
-//            viewTextSelection.defineSelection.visibility = View.VISIBLE
-//        } else {
-//            viewTextSelection.defineSelection.visibility = View.GONE
-//        }
+        if (config.isDefineEnabled) {
+            viewTextSelection.defineSelection.visibility = View.GONE
+        } else {
+            viewTextSelection.defineSelection.visibility = View.GONE
+        }
         viewTextSelection.defineSelection.setOnClickListener {
             dismissPopupWindow()
             loadUrl("javascript:onTextSelectionItemClicked(${it.id})")
         }
 
-//        if (config.isNoteTakingEnabled) {
-//            viewTextSelection.noteSelection.visibility = View.VISIBLE
-//        } else {
-//            viewTextSelection.noteSelection.visibility = View.GONE
-//        }
+        if (config.isNoteTakingEnabled) {
+            viewTextSelection.noteSelection.visibility = View.GONE
+        } else {
+            viewTextSelection.noteSelection.visibility = View.GONE
+        }
 
-//        viewTextSelection.noteSelection.setOnClickListener {
-//            Log.v(LOG_TAG, "-> onClick -> note")
-//
-//            val dialog = Dialog(ctw)
-//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-//            dialog.setContentView(R.layout.dialog_edit_notes)
-//            dialog.show()
-//
-//            dialog.findViewById<Button>(R.id.btn_save_note).backgroundTintList =
-//                ColorStateList.valueOf(config.themeColor)
-//
-//            dialog.findViewById<View>(R.id.btn_save_note)
-//                .setOnClickListener {
-//                    val note =
-//                        (dialog.findViewById<View>(R.id.edit_note) as EditText).text
-//                            .toString()
-//                    if (!TextUtils.isEmpty(note)) {
-//                        onNoteItemsClicked(false, note)
-//                        dialog.dismiss()
-//                    } else {
-//                        Toast.makeText(
-//                            context,
-//                            context.getString(R.string.please_enter_note),
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//
-//        }
+        viewTextSelection.noteSelection.setOnClickListener {
+            Log.v(LOG_TAG, "-> onClick -> note")
+
+            val dialog = Dialog(ctw)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setContentView(R.layout.dialog_edit_notes)
+            dialog.show()
+
+            dialog.findViewById<Button>(R.id.btn_save_note).backgroundTintList =
+                ColorStateList.valueOf(config.themeColor)
+
+            dialog.findViewById<View>(R.id.btn_save_note)
+                .setOnClickListener {
+                    val note =
+                        (dialog.findViewById<View>(R.id.edit_note) as EditText).text
+                            .toString()
+                    if (!TextUtils.isEmpty(note)) {
+                        onNoteItemsClicked(false, note)
+                        dialog.dismiss()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.please_enter_note),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+        }
 
     }
 
@@ -387,12 +387,12 @@ class FolioWebView : WebView {
             R.id.shareSelection -> {
                 Log.v(LOG_TAG, "-> onTextSelectionItemClicked -> shareSelection -> $selectedText")
 
-//                val shareHandler = AppUtil.getShareHandler()
-//                if (shareHandler != null) {
-//                    shareHandler.share(context, selectedText)
-//                } else {
-//                    UiUtil.share(context, selectedText)
-//                }
+                val shareHandler = AppUtil.getShareHandler()
+                if (shareHandler != null) {
+                    shareHandler.share(context, selectedText)
+                } else {
+                    UiUtil.share(context, selectedText)
+                }
             }
             R.id.defineSelection -> {
                 Log.v(LOG_TAG, "-> onTextSelectionItemClicked -> defineSelection -> $selectedText")
@@ -464,10 +464,10 @@ class FolioWebView : WebView {
         dictionaryFragment.show(parentFragment.fragmentManager!!, DictionaryFragment::class.java.name)
     }
 
-//    private fun onNoteItemsClicked(isAlreadyCreated: Boolean, note: String) {
-//        parentFragment.note(HighlightStyle.Yellow, isAlreadyCreated, note)
-//        dismissPopupWindow()
-//    }
+    private fun onNoteItemsClicked(isAlreadyCreated: Boolean, note: String) {
+        parentFragment.note(HighlightStyle.Yellow, isAlreadyCreated, note)
+        dismissPopupWindow()
+    }
 
     private fun onHighlightColorItemsClicked(style: HighlightStyle, isAlreadyCreated: Boolean) {
         parentFragment.highlight(style, isAlreadyCreated)

@@ -12,7 +12,7 @@
         app:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="288dp"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:background="?popUpWindowBackground">
 
@@ -38,27 +38,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/share" />
+
                 <TextView
-                    android:id="@+id/alintiSelection"
+                    android:id="@+id/translateSelection"
                     style="@style/TextViewTextSelector"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/alintila" />
+                    android:text="@string/translate" />
+
                 <TextView
                     android:id="@+id/defineSelection"
                     style="@style/TextViewTextSelector"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                        android:visibility="gone"
                     android:text="@string/define" />
+
                 <TextView
-                        android:id="@+id/translateSelection"
-                        style="@style/TextViewTextSelector"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:text="@string/translate_select" />
+                    android:id="@+id/noteSelection"
+                    style="@style/TextViewTextSelector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/note" />
 
             </LinearLayout>
 
@@ -76,7 +76,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/firstHorizontalDivider">
+                app:layout_constraintTop_toBottomOf="@id/firstHorizontalDivider"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
