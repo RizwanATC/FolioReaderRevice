@@ -32,7 +32,6 @@ import com.folioreader.model.HighlightImpl
 import com.folioreader.model.event.*
 import com.folioreader.model.locators.ReadLocator
 import com.folioreader.model.locators.SearchLocator
-import com.folioreader.model.sqlite.DbAdapter
 import com.folioreader.model.sqlite.HighLightTable
 import com.folioreader.ui.activity.FolioActivityCallback
 import com.folioreader.ui.base.HtmlTask
@@ -134,6 +133,8 @@ class FolioPageFragment : Fragment(),
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+try {
+
 
         this.savedInstanceState = savedInstanceState
         uiHandler = Handler()
@@ -168,13 +169,20 @@ class FolioPageFragment : Fragment(),
         mMinutesLeftTextView = mRootView!!.findViewById<View>(R.id.minutesLeft) as TextView
 
         mConfig = AppUtil.getSavedConfig(context)
+        if (mActivityCallback!!.direction == Config.Direction.HORIZONTAL) {
+            mPagesLeftTextView!!.visibility = View.INVISIBLE
+            mMinutesLeftTextView!!.visibility = View.INVISIBLE
+        }
 
         loadingView = mRootView!!.findViewById(R.id.loadingView)
         initSeekbar()
         initAnimations()
         initWebView()
         updatePagesLeftTextBg()
-
+} catch (e: Exception) {
+    Log.e("FolioTest02", "onCreateView", e);
+    throw e;
+}
         return mRootView
     }
 
@@ -219,11 +227,11 @@ class FolioPageFragment : Fragment(),
         if (isAdded) {
             when (event.style) {
                 MediaOverlayHighlightStyleEvent.Style.DEFAULT -> highlightStyle =
-                    HighlightImpl.HighlightStyle.classForStyle(HighlightImpl.HighlightStyle.Normal)
+                        HighlightImpl.HighlightStyle.classForStyle(HighlightImpl.HighlightStyle.Normal)
                 MediaOverlayHighlightStyleEvent.Style.UNDERLINE -> highlightStyle =
-                    HighlightImpl.HighlightStyle.classForStyle(HighlightImpl.HighlightStyle.DottetUnderline)
+                        HighlightImpl.HighlightStyle.classForStyle(HighlightImpl.HighlightStyle.DottetUnderline)
                 MediaOverlayHighlightStyleEvent.Style.BACKGROUND -> highlightStyle =
-                    HighlightImpl.HighlightStyle.classForStyle(HighlightImpl.HighlightStyle.TextColor)
+                        HighlightImpl.HighlightStyle.classForStyle(HighlightImpl.HighlightStyle.TextColor)
             }
             mWebview!!.loadUrl(String.format(getString(R.string.setmediaoverlaystyle), highlightStyle))
         }
@@ -267,11 +275,6 @@ class FolioPageFragment : Fragment(),
             this.rangy = HighlightUtil.generateRangyString(pageName)
             loadRangy(this.rangy)
         }
-    }
-
-    fun scrollToSentence(sentence : String?) {
-        if (sentence != null && sentence.isNotEmpty() && mWebview != null)
-            mWebview!!.loadUrl(String.format(getString(R.string.callScrollToSentence), sentence))
     }
 
     fun scrollToAnchorId(href: String) {
@@ -325,7 +328,7 @@ class FolioPageFragment : Fragment(),
             uiHandler.post {
                 mWebview!!.loadDataWithBaseURL(
                     mActivityCallback?.streamerUrl + path,
-                    HtmlUtil.getHtmlContent(mWebview!!.context, mHtmlString, mConfig!!),
+                    HtmlUtil.getHtmlContent(context!!, mHtmlString, mConfig!!),
                     mimeType,
                     "UTF-8", null
                 )
@@ -381,9 +384,9 @@ class FolioPageFragment : Fragment(),
 
         mWebview!!.addJavascriptInterface(this, "Highlight")
         mWebview!!.addJavascriptInterface(this, "FolioPageFragment")
-        mWebview!!.addJavascriptInterface(webViewPager, "WebViewPager")
-        mWebview!!.addJavascriptInterface(loadingView, "LoadingView")
-        mWebview!!.addJavascriptInterface(mWebview, "FolioWebView")
+        mWebview!!.addJavascriptInterface(webViewPager!!, "WebViewPager")
+        mWebview!!.addJavascriptInterface(loadingView!!, "LoadingView")
+        mWebview!!.addJavascriptInterface(mWebview!!, "FolioWebView")
 
         mWebview!!.setScrollListener(object : FolioWebView.ScrollListener {
             override fun onScrollChange(percent: Int) {
@@ -403,7 +406,19 @@ class FolioPageFragment : Fragment(),
     private val webViewClient = object : WebViewClient() {
 
         override fun onPageFinished(view: WebView, url: String) {
+            super.onPageFinished(view, url)
 
+            if (view.contentHeight != 0) {
+                val scrollY = view.scrollY
+                updatePagesLeftText(scrollY)
+            } else {
+                // In case contentHeight is not yet set, post a delay
+                view.post {
+                    if (view.contentHeight != 0) {
+                        updatePagesLeftText(view.scrollY)
+                    }
+                }
+            }
             mWebview!!.loadUrl("javascript:checkCompatMode()")
             mWebview!!.loadUrl("javascript:alert(getReadingTime())")
 
@@ -419,12 +434,7 @@ class FolioPageFragment : Fragment(),
                 )
             )
 
-            val rangy = try {
-                HighlightUtil.generateRangyString(pageName)
-            } catch (e: NullPointerException) {
-                DbAdapter.initialize(context)
-                HighlightUtil.generateRangyString(pageName)
-            }
+            val rangy = HighlightUtil.generateRangyString(pageName)
             this@FolioPageFragment.rangy = rangy
             if (!rangy.isEmpty())
                 loadRangy(rangy)
@@ -439,7 +449,9 @@ class FolioPageFragment : Fragment(),
                     mWebview!!.loadUrl(callHighlightSearchLocator)
 
                 } else if (isCurrentFragment) {
-                    val cfi = lastReadLocator!!.locations.cfi
+                    var cfi ="epubcfi(/0!/4/4/8/1:0)";
+                    if(lastReadLocator!!.locations.cfi!=null)
+                    cfi = lastReadLocator!!.locations.cfi!!
                     mWebview!!.loadUrl(String.format(getString(R.string.callScrollToCfi), cfi))
 
                 } else {
@@ -510,8 +522,7 @@ class FolioPageFragment : Fragment(),
             if (!urlOfEpub) {
                 // Otherwise, give the default behavior (open in browser)
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                if (intent.resolveActivity(activity?.packageManager) != null)
-                    startActivity(intent)
+                startActivity(intent)
             }
 
             return true
@@ -670,8 +681,23 @@ class FolioPageFragment : Fragment(),
             mRootView!!.findViewById<View>(R.id.indicatorLayout)
                 .setBackgroundColor(Color.parseColor("#131313"))
         } else {
-            mRootView!!.findViewById<View>(R.id.indicatorLayout)
-                .setBackgroundColor(Color.WHITE)
+            val backgroundColor = mConfig!!.getBackgroundColor()
+            when (backgroundColor) {
+                0 -> mRootView!!.findViewById<View>(R.id.indicatorLayout)
+                    .setBackgroundColor(ContextCompat.getColor(activity!!,
+                        R.color.white))
+                1 -> mRootView!!.findViewById<View>(R.id.indicatorLayout)
+                    .setBackgroundColor(ContextCompat.getColor(activity!!,
+                        R.color.background_yellow))
+                2 -> mRootView!!.findViewById<View>(R.id.indicatorLayout)
+                    .setBackgroundColor(ContextCompat.getColor(activity!!,
+                        R.color.background_acik))
+                3 -> mRootView!!.findViewById<View>(R.id.indicatorLayout)
+                    .setBackgroundColor(ContextCompat.getColor(activity!!,
+                        R.color.highlight_green))
+                else -> {
+                }
+            }
         }
     }
 
@@ -707,10 +733,10 @@ class FolioPageFragment : Fragment(),
 
             mMinutesLeftTextView!!.text = minutesRemainingStr
             mPagesLeftTextView!!.text = pagesRemainingStr
-        } catch (exp: java.lang.ArithmeticException) {
-            Log.e("divide error", exp.toString())
+        } catch (exp: ArithmeticException) {
+            Log.e("FolioPageFragment", "Arithmetic error in updatePagesLeftText", exp)
         } catch (exp: IllegalStateException) {
-            Log.e("divide error", exp.toString())
+            Log.e("FolioPageFragment", "State error in updatePagesLeftText", exp)
         }
 
     }
@@ -799,20 +825,6 @@ class FolioPageFragment : Fragment(),
         }
     }
 
-    fun note(style: HighlightImpl.HighlightStyle, isAlreadyCreated: Boolean, note: String) {
-        if (!isAlreadyCreated) {
-            mWebview!!.loadUrl(
-                String.format(
-                    "javascript:if(typeof ssReader !== \"undefined\"){ssReader.noteSelection('%s', '%s');}",
-                    HighlightImpl.HighlightStyle.classForStyle(style),
-                    note
-                )
-            )
-        } else {
-            //todo
-        }
-    }
-
     override fun resetCurrentIndex() {
         if (isCurrentFragment) {
             mWebview!!.loadUrl("javascript:rewindCurrentIndex()")
@@ -828,23 +840,7 @@ class FolioPageFragment : Fragment(),
                 mBookId,
                 pageName,
                 spineIndex,
-                rangy,
-                null
-            )
-        }
-    }
-
-    @JavascriptInterface
-    fun onReceiveNotes(html: String?, note: String?) {
-        if (html != null) {
-            rangy = HighlightUtil.createHighlightRangy(
-                activity!!.applicationContext,
-                html,
-                mBookId,
-                pageName,
-                spineIndex,
-                rangy,
-                note
+                rangy
             )
         }
     }
@@ -880,7 +876,7 @@ class FolioPageFragment : Fragment(),
         if (isCurrentFragment) {
             if (outState != null)
                 outState!!.putSerializable(BUNDLE_READ_LOCATOR_CONFIG_CHANGE, lastReadLocator)
-            if (activity != null && !activity!!.isFinishing && lastReadLocator != null)
+            if (activity != null && !activity!!.isFinishing)
                 mActivityCallback!!.storeLastReadLocator(lastReadLocator)
         }
         if (mWebview != null) mWebview!!.destroy()
