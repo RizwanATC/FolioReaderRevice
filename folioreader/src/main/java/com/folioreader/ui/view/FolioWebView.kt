@@ -761,7 +761,7 @@ class FolioWebView : WebView {
         Log.d(LOG_TAG, "-> viewportRect -> $viewportRect")
 
         if (!Rect.intersects(viewportRect, currentSelectionRect)) {
-            Log.i(LOG_TAG, "-> currentSelectionRect doesn't intersects viewportRect")
+            Log.i(LOG_TAG, "-> currentSelectionRect doesn't intersect viewportRect")
             uiHandler.post {
                 popupWindow.dismiss()
                 uiHandler.removeCallbacks(isScrollingRunnable!!)
@@ -789,16 +789,13 @@ class FolioWebView : WebView {
         val belowSelectionRect = Rect(viewportRect)
         belowSelectionRect.top = selectionRect.bottom + handleHeight
 
-        //Log.d(LOG_TAG, "-> aboveSelectionRect -> " + aboveSelectionRect);
-        //Log.d(LOG_TAG, "-> belowSelectionRect -> " + belowSelectionRect);
+        // Priority to show popupWindow will be as follows:
+        // 1. Show popupWindow below selectionRect, if space is available
+        // 2. Show popupWindow above selectionRect, if space is available
+        // 3. Adjust the popupWindow position to avoid overlapping the selectionRect
 
-        // Priority to show popupWindow will be as following -
-        // 1. Show popupWindow below selectionRect, if space available
-        // 2. Show popupWindow above selectionRect, if space available
-        // 3. Show popupWindow in the middle of selectionRect
-
-        //popupRect initialisation for belowSelectionRect
-        popupRect.left = viewportRect.left
+        // Initializing popupRect for belowSelectionRect
+        popupRect.left = selectionRect.left
         popupRect.top = belowSelectionRect.top
         popupRect.right = popupRect.left + viewTextSelection.measuredWidth
         popupRect.bottom = popupRect.top + viewTextSelection.measuredHeight
@@ -811,7 +808,7 @@ class FolioWebView : WebView {
 
         } else {
 
-            // popupRect initialisation for aboveSelectionRect
+            // Initializing popupRect for aboveSelectionRect
             popupRect.top = aboveSelectionRect.top
             popupRect.bottom = popupRect.top + viewTextSelection.measuredHeight
 
@@ -820,10 +817,16 @@ class FolioWebView : WebView {
                 popupY = aboveSelectionRect.bottom - popupRect.height()
 
             } else {
-
-                Log.i(LOG_TAG, "-> show in middle")
-                val popupYDiff = (viewTextSelection.measuredHeight - selectionRect.height()) / 2
-                popupY = selectionRect.top - popupYDiff
+                // If not enough space above or below, adjust the popup position to avoid overlap
+                Log.i(LOG_TAG, "-> adjust to avoid overlap")
+                val popupYDiff = (viewTextSelection.measuredHeight + selectionRect.height()) / 2
+                popupY = if (selectionRect.top > viewportRect.height() / 2) {
+                    // Adjust above the selectionRect
+                    selectionRect.top - popupYDiff
+                } else {
+                    // Adjust below the selectionRect
+                    selectionRect.bottom + popupYDiff
+                }
             }
         }
 
@@ -835,8 +838,8 @@ class FolioWebView : WebView {
 
         // Check if popupRect left side is going outside of the viewportRect
         if (popupRect.left < viewportRect.left) {
-            popupRect.right += 0 - popupRect.left
-            popupRect.left = 0
+            popupRect.right += viewportRect.left - popupRect.left
+            popupRect.left = viewportRect.left
         }
 
         // Check if popupRect right side is going outside of the viewportRect
@@ -846,6 +849,7 @@ class FolioWebView : WebView {
             popupRect.right -= dx
         }
     }
+
 
     private fun showTextSelectionPopup() {
         Log.v(LOG_TAG, "-> showTextSelectionPopup")
@@ -887,6 +891,7 @@ class FolioWebView : WebView {
             uiHandler.postDelayed(isScrollingRunnable!!, IS_SCROLLING_CHECK_TIMER.toLong())
     }
 
+
     private fun saveAlinti(selectedText: String?) {
         val config = AppUtil.getSavedConfig(context)!!
         Log.d("alinti",config.uid)
@@ -900,11 +905,11 @@ class FolioWebView : WebView {
                 .setPositiveButton("Tamam", null)
                 .show()
         }else {
-        val dialogAlinti = ProgressDialog(context)
-        dialogAlinti.setMessage(context.getString(R.string.kaydediliyor))
-        dialogAlinti.setCancelable(true)
-        dialogAlinti.setInverseBackgroundForced(true)
-        dialogAlinti.show()
+            val dialogAlinti = ProgressDialog(context)
+            dialogAlinti.setMessage(context.getString(R.string.kaydediliyor))
+            dialogAlinti.setCancelable(true)
+            dialogAlinti.setInverseBackgroundForced(true)
+            dialogAlinti.show()
 
 
             val requestQueue = Volley.newRequestQueue(context)
